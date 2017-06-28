@@ -1,10 +1,4 @@
 from pylab import *
-import sys
-import os
-sys.path.insert(0, '/Users/astevens/Dropbox/Swinburne Shared/6-MonthProject')
-from galprops import galplot as gp
-from galprops import galcalc as gc
-from scipy import signal as ss
 import random
 
 matplotlib.rcParams.update({'font.size': 1, 'xtick.major.size': 0, 'ytick.major.size': 0, 'xtick.major.width': 0, 'ytick.major.width': 0, 'ytick.minor.size': 0, 'xtick.minor.size': 0, 'axes.linewidth': 0, 'text.usetex': True, 'font.family': 'serif', 'font.serif': 'Times New Roman'})
@@ -18,6 +12,10 @@ compboxlen = 500
 pixmin = 250 # Default at 250. Consider lowering if compboxlen>1000
 pix = pixmin * compboxlen/500.
 
+# Info on your display
+xpix = 1920 # horizontal screen pixels
+ypix = 1200 # vertical screen pixels
+ss = 27 # diagonal screen size in inches
 
 
 
@@ -108,17 +106,14 @@ print 'histrogramming...'
 im, xedge, yedge = np.histogram2d(x, y, bins=pix)
 im *= (mass*dil_fac)
 width = (xedge[1]-xedge[0])
-
-rsmooth = width / (2**14)
-Lpix = width/pix
-if Lpix < rsmooth:
-    print 'smoothing...'
-    k = gc.sphere2dk(rsmooth, Lpix, 2*rsmooth/Lpix)
-    im = ss.convolve2d(im,k,mode='same')
 im2plot = np.log10(im.transpose() / width**2 + 1e-10)
 
 print 'plotting...'
-gp.figure()
+fig = plt.figure()
+plt.clf()
+fig.subplots_adjust(left=0, bottom=0)
+plt.subplot(111)
+
 plt.imshow(im2plot, interpolation='nearest', vmin=-0.2, vmax=3.5, cmap=plt.cm.hot, extent=[0,compboxlen,0,compboxlen], zorder=4)
 plt.xlabel('')
 plt.xticks([])
@@ -142,7 +137,7 @@ plt.plot([frac*compboxlen,frac*compboxlen], [0.5*frac*compboxlen, (1+0.5*frac)*c
 plt.plot([frac*compboxlen,(1+frac)*compboxlen], [0.5*frac*compboxlen, 0.5*frac*compboxlen], c_red, lw=2, zorder=1)
 
 
-
+# Add volume comparison of Millennium
 edge = 500
 thick = 7
 
@@ -163,11 +158,12 @@ plt.plot([0,frac*edge], [0, 0.5*frac*edge], c_Mill, lw=1, zorder=2)
 plt.plot([frac*edge,frac*edge], [0.5*frac*edge, (1+0.5*frac)*edge], c_Mill, lw=2, zorder=2)
 plt.plot([frac*edge,(1+frac)*edge], [0.5*frac*edge, 0.5*frac*edge], c_Mill, lw=2, zorder=2)
 
-
 edge = max(edge,compboxlen)
 plt.axis([-thick,edge*(1+frac)+thick,-thick,edge*(1+0.5*frac)+thick])
 
-edge = 240 # Now setting for observational volume comparison
+
+# Add observational volume comparison
+edge = 240
 c_Obs = '#a6bddb'
 plt.plot([0,0], [0,edge], '--', color=c_Obs, lw=3, zorder=7)
 plt.plot([0,edge], [0,0], '--', color=c_Obs, lw=3, zorder=7)
@@ -185,4 +181,13 @@ plt.plot([frac*edge,frac*edge], [0.5*frac*edge, (1+0.5*frac)*edge], '--', color=
 plt.plot([frac*edge,(1+frac)*edge], [0.5*frac*edge, 0.5*frac*edge], '--', color=c_Obs, lw=2, zorder=3)
 
 
-gp.savepng('BoxImage_'+str(compboxlen), xpixplot=max(pixmin,pix), ypixplot=max(pixmin,pix), transparent=True, xpix=1920, ypix=1200)
+# Finalise output figure
+xpixplot=max(pixmin,pix)
+ypixplot=max(pixmin,pix)
+mydpi = np.sqrt(xpix**2 + ypix**2)/ss  # The dpi of your screen
+xinplot = xpixplot*(9./7.)/mydpi
+yinplot = ypixplot*(9./7.)/mydpi
+fig.set_size_inches(xinplot,yinplot)
+fig.set_dpi(mydpi)
+imagename = 'BoxImage_'+str(compboxlen)+'.png'
+plt.savefig(imagename, dpi=mydpi, bbox_inches='tight', transparent=True)
