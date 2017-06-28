@@ -15,7 +15,7 @@ pix = pixmin * compboxlen/500.
 # Info on your display
 xpix = 1920 # horizontal screen pixels
 ypix = 1200 # vertical screen pixels
-ss = 27 # diagonal screen size in inches
+ss = 15 # diagonal screen size in inches
 
 
 
@@ -108,11 +108,22 @@ im *= (mass*dil_fac)
 width = (xedge[1]-xedge[0])
 im2plot = np.log10(im.transpose() / width**2 + 1e-10)
 
+# Set up figure
 print 'plotting...'
 fig = plt.figure()
 plt.clf()
 fig.subplots_adjust(left=0, bottom=0)
 plt.subplot(111)
+
+xpixplot=max(pixmin,pix)
+ypixplot=max(pixmin,pix)
+mydpi = np.sqrt(xpix**2 + ypix**2)/ss  # The dpi of your screen
+xinplot = xpixplot/mydpi
+yinplot = ypixplot/mydpi
+fig.set_size_inches(xinplot,yinplot)
+fig.set_dpi(mydpi)
+
+lwf = 100. / mydpi
 
 plt.imshow(im2plot, interpolation='nearest', vmin=-0.2, vmax=3.5, cmap=plt.cm.hot, extent=[0,compboxlen,0,compboxlen], zorder=4)
 plt.xlabel('')
@@ -120,21 +131,21 @@ plt.xticks([])
 plt.yticks([])
 
 c_red = '#840000'
-plt.plot([0,compboxlen], [0,0], c_red, lw=2, zorder=5)
-plt.plot([0,0], [0,compboxlen], c_red, lw=2, zorder=5)
-plt.plot([0,compboxlen], [compboxlen,compboxlen], c_red, lw=2, zorder=5)
-plt.plot([compboxlen,compboxlen], [0,compboxlen], c_red, lw=2, zorder=5)
+plt.plot([0,compboxlen], [0,0], c_red, lw=lwf*2, zorder=5)
+plt.plot([0,0], [0,compboxlen], c_red, lw=lwf*2, zorder=5)
+plt.plot([0,compboxlen], [compboxlen,compboxlen], c_red, lw=lwf*2, zorder=5)
+plt.plot([compboxlen,compboxlen], [0,compboxlen], c_red, lw=lwf*2, zorder=5)
 
 frac = 0.2
-plt.plot([0,frac*compboxlen], [compboxlen, (1+0.5*frac)*compboxlen], c_red, lw=1, zorder=1)
-plt.plot([compboxlen,(1+frac)*compboxlen], [compboxlen, (1+0.5*frac)*compboxlen], c_red, lw=1, zorder=1)
-plt.plot([compboxlen,(1+frac)*compboxlen], [0, 0.5*frac*compboxlen], c_red, lw=1, zorder=1)
-plt.plot([frac*compboxlen,(1+frac)*compboxlen], [(1+0.5*frac)*compboxlen,(1+0.5*frac)*compboxlen], c_red, lw=2, zorder=1)
-plt.plot([(1+frac)*compboxlen, (1+frac)*compboxlen], [0.5*frac*compboxlen, (1+0.5*frac)*compboxlen], c_red, lw=2, zorder=1)
+plt.plot([0,frac*compboxlen], [compboxlen, (1+0.5*frac)*compboxlen], c_red, lw=lwf, zorder=1)
+plt.plot([compboxlen,(1+frac)*compboxlen], [compboxlen, (1+0.5*frac)*compboxlen], c_red, lw=lwf, zorder=1)
+plt.plot([compboxlen,(1+frac)*compboxlen], [0, 0.5*frac*compboxlen], c_red, lw=lwf, zorder=1)
+plt.plot([frac*compboxlen,(1+frac)*compboxlen], [(1+0.5*frac)*compboxlen,(1+0.5*frac)*compboxlen], c_red, lw=lwf*2, zorder=1)
+plt.plot([(1+frac)*compboxlen, (1+frac)*compboxlen], [0.5*frac*compboxlen, (1+0.5*frac)*compboxlen], c_red, lw=lwf*2, zorder=1)
 
-plt.plot([0,frac*compboxlen], [0, 0.5*frac*compboxlen], c_red, lw=1, zorder=1)
-plt.plot([frac*compboxlen,frac*compboxlen], [0.5*frac*compboxlen, (1+0.5*frac)*compboxlen], c_red, lw=2, zorder=1)
-plt.plot([frac*compboxlen,(1+frac)*compboxlen], [0.5*frac*compboxlen, 0.5*frac*compboxlen], c_red, lw=2, zorder=1)
+plt.plot([0,frac*compboxlen], [0, 0.5*frac*compboxlen], c_red, lw=lwf, zorder=1)
+plt.plot([frac*compboxlen,frac*compboxlen], [0.5*frac*compboxlen, (1+0.5*frac)*compboxlen], c_red, lw=lwf*2, zorder=1)
+plt.plot([frac*compboxlen,(1+frac)*compboxlen], [0.5*frac*compboxlen, 0.5*frac*compboxlen], c_red, lw=lwf*2, zorder=1)
 
 
 # Add volume comparison of Millennium
@@ -143,20 +154,20 @@ thick = 7
 
 c_Mill = '#2b8cbe'
 
-plt.plot([0,0], [0,edge], '-', color=c_Mill, lw=1*3, zorder=6)
-plt.plot([0,edge], [0,0], '-', color=c_Mill, lw=1*3, zorder=6)
-plt.plot([0,edge], [edge,edge], '-', color=c_Mill, lw=1*3, zorder=6)
-plt.plot([edge,edge], [edge,0.0], '-', color=c_Mill, lw=1*3, zorder=6)
+plt.plot([0,0], [0,edge], '-', color=c_Mill, lw=lwf*3, zorder=6)
+plt.plot([0,edge], [0,0], '-', color=c_Mill, lw=lwf*3, zorder=6)
+plt.plot([0,edge], [edge,edge], '-', color=c_Mill, lw=lwf*3, zorder=6)
+plt.plot([edge,edge], [edge,0.0], '-', color=c_Mill, lw=lwf*3, zorder=6)
 
-plt.plot([0,frac*edge], [edge, (1+0.5*frac)*edge], c_Mill, lw=1, zorder=2)
-plt.plot([edge,(1+frac)*edge], [edge, (1+0.5*frac)*edge], c_Mill, lw=1, zorder=2)
-plt.plot([edge,(1+frac)*edge], [0, 0.5*frac*edge], c_Mill, lw=1, zorder=2)
-plt.plot([frac*edge,(1+frac)*edge], [(1+0.5*frac)*edge,(1+0.5*frac)*edge], c_Mill, lw=2, zorder=2)
-plt.plot([(1+frac)*edge, (1+frac)*edge], [0.5*frac*edge, (1+0.5*frac)*edge], c_Mill, lw=2, zorder=2)
+plt.plot([0,frac*edge], [edge, (1+0.5*frac)*edge], c_Mill, lw=lwf, zorder=2)
+plt.plot([edge,(1+frac)*edge], [edge, (1+0.5*frac)*edge], c_Mill, lw=lwf, zorder=2)
+plt.plot([edge,(1+frac)*edge], [0, 0.5*frac*edge], c_Mill, lw=lwf, zorder=2)
+plt.plot([frac*edge,(1+frac)*edge], [(1+0.5*frac)*edge,(1+0.5*frac)*edge], c_Mill, lw=lwf*2, zorder=2)
+plt.plot([(1+frac)*edge, (1+frac)*edge], [0.5*frac*edge, (1+0.5*frac)*edge], c_Mill, lw=lwf*2, zorder=2)
 
-plt.plot([0,frac*edge], [0, 0.5*frac*edge], c_Mill, lw=1, zorder=2)
-plt.plot([frac*edge,frac*edge], [0.5*frac*edge, (1+0.5*frac)*edge], c_Mill, lw=2, zorder=2)
-plt.plot([frac*edge,(1+frac)*edge], [0.5*frac*edge, 0.5*frac*edge], c_Mill, lw=2, zorder=2)
+plt.plot([0,frac*edge], [0, 0.5*frac*edge], c_Mill, lw=lwf, zorder=2)
+plt.plot([frac*edge,frac*edge], [0.5*frac*edge, (1+0.5*frac)*edge], c_Mill, lw=lwf*2, zorder=2)
+plt.plot([frac*edge,(1+frac)*edge], [0.5*frac*edge, 0.5*frac*edge], c_Mill, lw=lwf*2, zorder=2)
 
 edge = max(edge,compboxlen)
 plt.axis([-thick,edge*(1+frac)+thick,-thick,edge*(1+0.5*frac)+thick])
@@ -165,29 +176,22 @@ plt.axis([-thick,edge*(1+frac)+thick,-thick,edge*(1+0.5*frac)+thick])
 # Add observational volume comparison
 edge = 240
 c_Obs = '#a6bddb'
-plt.plot([0,0], [0,edge], '--', color=c_Obs, lw=3, zorder=7)
-plt.plot([0,edge], [0,0], '--', color=c_Obs, lw=3, zorder=7)
-plt.plot([0,edge], [edge,edge], '--', color=c_Obs, lw=3, zorder=7)
-plt.plot([edge,edge], [edge,0.0], '--', color=c_Obs, lw=3, zorder=7)
+plt.plot([0,0], [0,edge], '--', color=c_Obs, lw=lwf*3, zorder=7)
+plt.plot([0,edge], [0,0], '--', color=c_Obs, lw=lwf*3, zorder=7)
+plt.plot([0,edge], [edge,edge], '--', color=c_Obs, lw=lwf*3, zorder=7)
+plt.plot([edge,edge], [edge,0.0], '--', color=c_Obs, lw=lwf*3, zorder=7)
 
-plt.plot([0,frac*edge], [edge, (1+0.5*frac)*edge], '--', color=c_Obs, lw=1, zorder=3)
-plt.plot([edge,(1+frac)*edge], [edge, (1+0.5*frac)*edge], '--', color=c_Obs, lw=1, zorder=3)
-plt.plot([edge,(1+frac)*edge], [0, 0.5*frac*edge], '--', color=c_Obs, lw=1, zorder=3)
-plt.plot([frac*edge,(1+frac)*edge], [(1+0.5*frac)*edge,(1+0.5*frac)*edge], '--', color=c_Obs, lw=2, zorder=3)
-plt.plot([(1+frac)*edge, (1+frac)*edge], [0.5*frac*edge, (1+0.5*frac)*edge], '--', color=c_Obs, lw=2, zorder=3)
+plt.plot([0,frac*edge], [edge, (1+0.5*frac)*edge], '--', color=c_Obs, lw=lwf, zorder=3)
+plt.plot([edge,(1+frac)*edge], [edge, (1+0.5*frac)*edge], '--', color=c_Obs, lw=lwf, zorder=3)
+plt.plot([edge,(1+frac)*edge], [0, 0.5*frac*edge], '--', color=c_Obs, lw=lwf, zorder=3)
+plt.plot([frac*edge,(1+frac)*edge], [(1+0.5*frac)*edge,(1+0.5*frac)*edge], '--', color=c_Obs, lw=lwf*2, zorder=3)
+plt.plot([(1+frac)*edge, (1+frac)*edge], [0.5*frac*edge, (1+0.5*frac)*edge], '--', color=c_Obs, lw=lwf*2, zorder=3)
 
-plt.plot([0,frac*edge], [0, 0.5*frac*edge], '--', color=c_Obs, lw=1, zorder=3)
-plt.plot([frac*edge,frac*edge], [0.5*frac*edge, (1+0.5*frac)*edge], '--', color=c_Obs, lw=2, zorder=3)
-plt.plot([frac*edge,(1+frac)*edge], [0.5*frac*edge, 0.5*frac*edge], '--', color=c_Obs, lw=2, zorder=3)
+plt.plot([0,frac*edge], [0, 0.5*frac*edge], '--', color=c_Obs, lw=lwf, zorder=3)
+plt.plot([frac*edge,frac*edge], [0.5*frac*edge, (1+0.5*frac)*edge], '--', color=c_Obs, lw=lwf*2, zorder=3)
+plt.plot([frac*edge,(1+frac)*edge], [0.5*frac*edge, 0.5*frac*edge], '--', color=c_Obs, lw=lwf*2, zorder=3)
 
 
 # Finalise output figure
-xpixplot=max(pixmin,pix)
-ypixplot=max(pixmin,pix)
-mydpi = np.sqrt(xpix**2 + ypix**2)/ss  # The dpi of your screen
-xinplot = xpixplot*(9./7.)/mydpi
-yinplot = ypixplot*(9./7.)/mydpi
-fig.set_size_inches(xinplot,yinplot)
-fig.set_dpi(mydpi)
 imagename = 'BoxImage_'+str(compboxlen)+'.png'
 plt.savefig(imagename, dpi=mydpi, bbox_inches='tight', transparent=True)
