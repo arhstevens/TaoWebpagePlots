@@ -1,12 +1,19 @@
+from __future__ import print_function
+
 from pylab import *
 import random
+
+try:
+    xrange
+except NameError:
+    xrange = range
 
 matplotlib.rcParams.update({'font.size': 1, 'xtick.major.size': 0, 'ytick.major.size': 0, 'xtick.major.width': 0, 'ytick.major.width': 0, 'ytick.minor.size': 0, 'xtick.minor.size': 0, 'axes.linewidth': 0, 'text.usetex': True, 'font.family': 'serif', 'font.serif': 'Times New Roman'})
 
 
 # Set manually -- this is the length of the box is image is meant for in Mpc/h
 # (e.g. set 250 for Bolshoi, 500 for Millennium, 1000 for MDPL...)
-compboxlen = 500
+compboxlen = 67.8
 
 # Sets the physical size of the output image.
 pixmin = 250 # Default at 250. Consider lowering if compboxlen>1000
@@ -47,7 +54,7 @@ z -= np.random.rand()*boxlen*1e6
 z[z<0] += boxlen*1e6
 
 # Replicate the read-in simulation to match the appropriate size
-print 'replicating box...'
+print('replicating box...')
 if compboxlen>boxlen:
     Ncopy = int(compboxlen/boxlen) + 1
     if compboxlen>500:
@@ -58,7 +65,7 @@ if compboxlen>boxlen:
         Nkeep = len(x)
     xnew = np.empty(Nkeep*Ncopy**2)
     ynew = np.empty(Nkeep*Ncopy**2)
-    print 'Need >', round(Nkeep*Ncopy**2*8*2*1e-9, 2), 'GB of RAM to produce this plot'
+    print('Need >', round(Nkeep*Ncopy**2*8*2*1e-9, 2), 'GB of RAM to produce this plot')
     count = 0
     for cx in xrange(Ncopy):
         for cy in xrange(Ncopy):
@@ -70,12 +77,12 @@ if compboxlen>boxlen:
             y_t[y_t<0] += boxlen*1e6
             z_t = z[indices] - np.random.rand()*boxlen*1e6
             z_t[z_t<0] += boxlen*1e6
-            
+
             # Centre box
             x_t -= boxlen*5e5
             y_t -= boxlen*5e5
             z_t -= boxlen*5e5
-        
+
             # Random rotations
             theta = np.pi*np.random.random_integers(0,3)/2.
             phi = np.pi*np.random.random_integers(0,3)/2.
@@ -102,14 +109,14 @@ f = (x*1e-6<compboxlen) * (y*1e-6<compboxlen)
 x = x[f]
 y = y[f]
 
-print 'histrogramming...'
+print('histrogramming...')
 im, xedge, yedge = np.histogram2d(x, y, bins=pix)
 im *= (mass*dil_fac)
 width = (xedge[1]-xedge[0])
 im2plot = np.log10(im.transpose() / width**2 + 1e-10)
 
 # Set up figure
-print 'plotting...'
+print('plotting...')
 fig = plt.figure()
 plt.clf()
 fig.subplots_adjust(left=0, bottom=0)

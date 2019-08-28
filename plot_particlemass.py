@@ -1,9 +1,15 @@
+from __future__ import print_function
 from pylab import *
+
+try:
+    xrange
+except NameError:
+    xrange = range
 
 matplotlib.rcParams.update({'font.size': 1, 'xtick.major.size': 0, 'ytick.major.size': 0, 'xtick.major.width': 0, 'ytick.major.width': 0, 'ytick.minor.size': 0, 'xtick.minor.size': 0, 'axes.linewidth': 0, 'text.usetex': True, 'font.family': 'serif', 'font.serif': 'Times New Roman'})
 
 # Particle mass of simulation of interest [Msun/h]
-pm = 6.17e9
+pm = 2.64e6
 
 # Set physical size of image
 pixmin = 150
@@ -49,7 +55,7 @@ pix = pixmin * max(1., rcomp)
 
 
 # Set up figure
-print 'plotting...'
+print('plotting...')
 fig = plt.figure()
 plt.clf()
 fig.subplots_adjust(left=0, bottom=0)
